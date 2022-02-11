@@ -1,0 +1,31 @@
+.header-component {
+	text-align: center;
+}
+.header-component img {
+	height: 80px;
+}
+
+.header-list {
+	background-color: black;
+}
+.header-list ul {
+	list-style: none;
+	text-align: left;
+}
+.header-list ul li {
+	display: inline-block;
+	line-height: 30px;
+	padding: 5px;
+	margin-right: 10px;
+}
+.header-list ul li a {
+	text-decoration: none;
+	color: #fff;
+	font-size: 20px;
+}
+.header-list ul li:hover {
+	background-color: lightgray;
+}
+.header-list ul li:hover a {
+	color: black;
+}
