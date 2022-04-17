@@ -1,13 +1,22 @@
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import fakeData from '../../fakeData';
-import { getStoredCart } from '../../utilities/fakedb';
+import { clearTheCart, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import ReviewItem from '../ReviewItem/ReviewItem';
 import { deleteFromDb } from '../../utilities/fakedb';
+import happyImage from '../../images/giphy.gif';
+import { useNavigate } from 'react-router-dom';
+
 
 const Review = () => {
+
+    const navigate = useNavigate();
     const [cart, setCart] = useState([]);
+    const [orderPlaced, setOrderPlaced] = useState(false);
+    const handleProceedCheckout = () => {
+        navigate('/shipment');
+    }
     const removeProduct = (productKey) => {
         const newCart = cart.filter(pd => pd.key !== productKey);
         setCart(newCart);
@@ -25,6 +34,10 @@ const Review = () => {
         // console.log(cartProducts);
         setCart(cartProducts);
     }, [])
+    let thankYou;
+    if (orderPlaced) {
+        thankYou = <img src={happyImage} alt="" />
+    }
     // console.log(cart);
     return (
         <>
@@ -33,10 +46,11 @@ const Review = () => {
                     {
                         cart.map(pd => <ReviewItem product={pd} key={pd.key} removeProduct={removeProduct} />)
                     }
+                    {thankYou}
                 </Grid>
                 <Grid item md={3} sx={{ paddingX: 2 }}>
                     <Cart cart={cart}>
-                        <button className="addBtn">Place Order</button>
+                        <button onClick={handleProceedCheckout} className="addBtn">Proceed Checkout</button>
                     </Cart>
                 </Grid>
             </Grid>
