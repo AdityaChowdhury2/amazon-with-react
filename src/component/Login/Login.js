@@ -2,9 +2,11 @@ import './login.css';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { handleCreateUserWithEmailAndPassword, handleFbLogin, handleGoogleSignIn, handleSignInWithEmailAndPassword, handleSignOut, initializeLoginFramework } from './loginManager';
+import { handleCreateUserWithEmailAndPassword, handleFbLogin, handleGoogleSignIn, handleSignInWithEmailAndPassword, handleSignOut, initializeLoginFramework, resetPassword } from './loginManager';
+import GoogleLogin from 'react-google-login';
 
 function Login() {
+    initializeLoginFramework();
     const [newUser, setNewUser] = useState(false);
     const [loggedInUser, setLoggedInUser] = useContext(UserContext)
     const location = useLocation();
@@ -19,13 +21,25 @@ function Login() {
         error: '',
         success: false
     })
+    const responseGoogle = (res) => {
+        console.log(res);
+        const { email, name, imageUrl } = res.profileObj;
+        const signedInUser = {
+            isSignedIn: true,
+            name: name,
+            email: email,
+            photo: imageUrl,
+            success: true
+        }
+        // console.log(signedInUser);
+        handleResponse(signedInUser, true);
+    }
     const handleResponse = (res, redirect) => {
         setUserInfo(res);
         setLoggedInUser(res);
         redirect && navigate(from, { replace: true });
 
     }
-    initializeLoginFramework();
     const googleSignIn = () => {
         handleGoogleSignIn()
             .then(res => {
@@ -55,10 +69,11 @@ function Login() {
         let isFieldValid = true;
         if (event.target.name === 'email') {
             isFieldValid = /\S+@\S+\.\S+/.test(event.target.value);
+            console.log(isFieldValid)
         }
         if (event.target.name === 'password') {
             isFieldValid = event.target.value.length > 6 && /\d/.test(event.target.value);
-
+            console.log(isFieldValid)
         }
         if (isFieldValid) {
             const newUserInfo = { ...userInfo };
@@ -94,19 +109,27 @@ function Login() {
         <div className="login">
             {
                 userInfo.isSignedIn ? <button onClick={signOut}>Sign Out</button> :
-                    <button onClick={googleSignIn}>Sign In</button>
+                    <GoogleLogin
+                        clientId="293203140537-2i4gt32cso61ro3v3s49rdctbjvd53qq.apps.googleusercontent.com"
+                        buttonText="Sign in with Google"
+                        onSuccess={responseGoogle}
+                        onFailure={responseGoogle}
+                        cookiePolicy={'single_host_origin'}
+                    />
+
+                // <button onClick={googleSignIn}>Sign In</button>
             }
             <br />
-            <button onClick={fbLogin}>Sign in using Facebook</button>
+            <button style={{ marginTop: '10px' }} onClick={fbLogin}>❌Sign in using Facebook❌</button>
             {/* <p>to {from}</p> */}
-            {
+            {/* {
                 userInfo.isSignedIn ? <div>
                     <p>Welcome, {userInfo.name}</p>
                     <p>Your email address : {userInfo.email}</p>
                     <img src={userInfo.photo} alt={userInfo.name} />
                 </div>
                     : <p>Please sign in</p>
-            }
+            } */}
             <h1>Our Own Authentication</h1>
             <input type="checkbox" name="newUser" onChange={() => { setNewUser(!newUser) }} id="" />
             <label>New User Sign Up</label>
@@ -119,6 +142,7 @@ function Login() {
                 <br />
                 <input type="submit" value={newUser ? 'Sign Up' : 'Log in'} />
             </form>
+            <button onClick={() => resetPassword(userInfo.email)}>Forget Password</button>
             <p style={{ color: 'red' }}>{userInfo.error}</p>
             {userInfo.success && <p style={{ color: 'green' }}> User {newUser ? 'Created' : `Logged in`} Successfully</p>}
             { }

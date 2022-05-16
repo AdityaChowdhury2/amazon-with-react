@@ -6,6 +6,7 @@ import { UserContext } from '../../App';
 
 const Header = () => {
     const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+    const name = loggedInUser.displayName || loggedInUser.name;
     const current = false;
     return (
         <>
@@ -16,12 +17,9 @@ const Header = () => {
                 <ul>
                     <li><Link to="/shop">Shop</Link></li>
                     <li><Link to="/review">Order Review</Link></li>
-                    <li><Link to="/inventory">Manage Inventory</Link></li>
-
-
-                    {loggedInUser.email && <button onClick={() => setLoggedInUser({})} >Sign Out</button>}
-
-
+                    <li><Link to="/orders">Order History</Link></li>
+                    {name && <li><Link to="/profile">Welcome {name}</Link></li>}
+                    {loggedInUser.email && <li><a onClick={() => setLoggedInUser({})} href='/' >Sign Out</a></li>}
                 </ul>
             </div>
         </>

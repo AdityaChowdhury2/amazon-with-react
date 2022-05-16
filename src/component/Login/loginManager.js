@@ -1,6 +1,6 @@
 import firebaseConfig from './firebase.config';
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, FacebookAuthProvider, sendPasswordResetEmail, getAuth, sendEmailVerification, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 
 
 export const initializeLoginFramework = () => {
@@ -32,10 +32,11 @@ export const handleFbLogin = () => {
         .then((result) => {
             // The signed-in user info.
             const user = result.user;
-            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-            const credential = FacebookAuthProvider.credentialFromResult(result);
-            const accessToken = credential.accessToken;
             user.success = true;
+            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+            // const credential = FacebookAuthProvider.credentialFromResult(result);
+            // const accessToken = credential.accessToken;
+
             return user;
             // ...
         })
@@ -77,6 +78,7 @@ export const handleCreateUserWithEmailAndPassword = (name, email, password) => {
             newUserInfo.success = true;
             newUserInfo.error = '';
             updateUserInfo(name);
+            verifyEmail()
             return newUserInfo;
 
         }).catch((error) => {
@@ -88,6 +90,7 @@ export const handleCreateUserWithEmailAndPassword = (name, email, password) => {
             // console.log(error.message)
         });
 }
+
 export const handleSignInWithEmailAndPassword = (email, password) => {
     const auth = getAuth();
     return signInWithEmailAndPassword(auth, email, password)
@@ -120,4 +123,26 @@ const updateUserInfo = name => {
         .catch((error) => {
             console.log(error);
         })
+}
+const verifyEmail = () => {
+    const auth = getAuth();
+    sendEmailVerification(auth.currentUser)
+        .then(() => {
+            console.log('User Name verified successfully');
+        }).catch(error => console.log(error()))
+        ;
+}
+export const resetPassword = email => {
+
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, email)
+        .then(() => {
+            // Password reset email sent!
+            // ..
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+        });
 }

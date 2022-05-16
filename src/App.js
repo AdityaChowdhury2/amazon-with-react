@@ -10,6 +10,7 @@ import Shipment from './component/Shipment/Shipment';
 import Login from './component/Login/Login';
 import { createContext, useState } from 'react';
 import PrivateRoute from './component/PrivateRoute/PrivateRoute';
+import Profile from './component/Profile/Profile';
 
 export const UserContext = createContext();
 
@@ -17,26 +18,30 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState({});
   return (
     <UserContext.Provider value={[loggedInUser, setLoggedInUser]}>
-      <h3>Email: {loggedInUser.email} </h3>
       <Router>
         <Header></Header>
         <Routes>
+          <Route path="*" element={<Error />} />
           <Route path="/" element={<Shop></Shop>} />
-          <Route path="/shop" element={<Shop></Shop>} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/inventory" element={
+          <Route path="shop" element={<Shop></Shop>} />
+          <Route path="profile" element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          } />
+          <Route path="review" element={<Review />} />
+          <Route path="orders" element={
             <PrivateRoute>
               <Inventory />
             </PrivateRoute>
           } />
-          <Route path="/login" element={<Login />} />
-          <Route path="/shipment" element={
+          <Route path="login" element={<Login />} />
+          <Route path="shipment" element={
             <PrivateRoute>
               <Shipment />
             </PrivateRoute>
           } />
           <Route path="/product/:key" element={<SingleProduct />} />
-          <Route path="/*" element={<Error />} />
         </Routes>
       </Router>
       <p className='text-center'>

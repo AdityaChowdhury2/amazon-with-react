@@ -11,6 +11,7 @@ const Shipment = () => {
     };
     const [loggedInUser, setLoggedInUser] = useContext(UserContext);
 
+
     console.log(watch("example")); // watch input value by passing the name of it
 
     return (
@@ -27,6 +28,13 @@ const Shipment = () => {
                 <input defaultValue={loggedInUser.email} {...register("email", { required: true })} />
                 {errors.email && <label><span className='error'>email is required</span></label>}
             </div >
+
+            <div>
+                <label>Phone Number</label>
+                <input {...register("phoneNumber", { required: true })} placeholder='Enter your phone number' />
+                {errors.phoneNumber && <span className='error'>Phone number is required</span>}
+            </div>
+
             <div>
                 <label>Address</label>
                 <input {...register("address", { required: true })} placeholder='Enter your address' />
@@ -34,9 +42,15 @@ const Shipment = () => {
             </div>
 
             <div>
-                <label>Phone Number</label>
-                <input {...register("phoneNumber", { required: true })} placeholder='Enter your phone number' />
-                {errors.phoneNumber && <span className='error'>Phone number is required</span>}
+                <label>Country</label>
+                <input {...register("country", { required: true })} placeholder='India' />
+                {errors.country && <span className='error'>Address is required</span>}
+            </div>
+
+            <div>
+                <label>Pincode</label>
+                <input {...register("pincode", { required: true })} placeholder='Pincode' />
+                {errors.pincode && <span className='error'>Pincode is required</span>}
             </div>
 
             <input type="submit" />
